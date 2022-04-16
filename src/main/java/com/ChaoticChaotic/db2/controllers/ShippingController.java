@@ -29,7 +29,7 @@ public class ShippingController {
     @PostMapping("/shippings")
     private Long addShipping(@RequestBody Shipping shipping){
         shippingService.addShipping(shipping);
-        return shipping.getShippingId();
+        return shipping.getId();
     }
 
 }

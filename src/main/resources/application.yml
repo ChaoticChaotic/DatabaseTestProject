@@ -1,0 +1,28 @@
+server:
+  port: 8080
+  error:
+    include-message: always
+    include-binding-errors: always
+    include-stacktrace: on_param
+    include-exception: false
+
+spring:
+  liquibase:
+    enabled: true
+  application:
+    name: db2
+  datasource:
+    username: user
+    password:
+    url: jdbc:postgresql://localhost:5433/user
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQL9Dialect
+        format_sql: true
+    show-sql: true
+  output:
+    ansi:
+      enabled: always

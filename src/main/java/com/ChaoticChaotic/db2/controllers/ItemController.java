@@ -29,7 +29,7 @@ public class ItemController {
     @PostMapping("/items")
     private Long addItem(@RequestBody Item item){
         itemService.addItem(item);
-        return item.getItemId();
+        return item.getId();
     }
 
 }

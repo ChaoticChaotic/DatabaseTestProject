@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Bean;
 
 
 import java.time.LocalDate;
-
+import java.util.List;
 
 
 @SpringBootApplication
@@ -28,28 +28,43 @@ public class Db2Application {
 
 
 
-	/*@Bean
+	@Bean
 	CommandLineRunner commandLineRunner(ItemRepository itemRepository,
 										ShippingRepository shippingRepository,
 										TownRepository townRepository) {
 		return args -> {
 
-			Item item1 = new Item("Fork", 156L);
-			Item item2 = new Item("Scoop", 1563L);
+			Item item = Item.builder()
+					.name("Fork")
+					.quantity(156L)
+					.build();
+			Item item1 = Item.builder()
+					.name("Scoop")
+					.quantity(1563L)
+					.build();
+			itemRepository.save(item);
 			itemRepository.save(item1);
-			itemRepository.save(item2);
-			Town town1 = new Town("Moscow",850L);
-			Town town2 = new Town("Kazan",400L);
+			Town town = Town.builder()
+					.name("Moscow")
+					.distance(850L)
+					.build();
+			Town town1 = Town.builder()
+					.name("Kazan")
+					.distance(400L)
+					.build();
+			townRepository.save(town);
 			townRepository.save(town1);
-			townRepository.save(town2);
 			LocalDate date = LocalDate.now();
-			LocalDate date2 = LocalDate.of(2021,12,21);
-			Shipping shipping1 = new Shipping(date,date2,town1,item2);
-			Shipping shipping2 = new Shipping(date,date2,town2,item1);
+			LocalDate date1 = LocalDate.of(2022,05,21);
+			Shipping shipping1 = Shipping.builder()
+					.startDate(date)
+					.endDate(date1)
+					.items(List.of(item,item1))
+					.towns(List.of(town,town1))
+					.build();
 			shippingRepository.save(shipping1);
-			shippingRepository.save(shipping2);
 		};
-	}*/
+	}
 
 }
 

@@ -29,6 +29,6 @@ public class TownController {
     @PostMapping("/towns")
     private Long addTown(@RequestBody Town town){
         townService.addTown(town);
-        return town.getTownId();
+        return town.getId();
     }
 }
