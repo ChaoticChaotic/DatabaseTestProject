@@ -1,10 +1,11 @@
 package com.ChaoticChaotic.db2.controllers;
 
 
+import com.ChaoticChaotic.db2.DTO.ItemDTO;
 import com.ChaoticChaotic.db2.entity.Item;
 import com.ChaoticChaotic.db2.services.ItemService;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,9 +28,8 @@ public class ItemController {
     }
 
     @PostMapping("/items")
-    private Long addItem(@RequestBody Item item){
-        itemService.addItem(item);
-        return item.getId();
+    private ResponseEntity<ItemDTO> saveItem(@RequestBody ItemDTO itemDTO){
+        return ResponseEntity.status(201).body(itemService.saveItemFromDTO(itemDTO));
     }
 
 }

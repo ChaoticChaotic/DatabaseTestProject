@@ -21,6 +21,7 @@ public class ShippingDTO {
     private Long id;
     private LocalDate startDate;
     private LocalDate endDate;
-    private List<Town> towns;
+    private Town fromTown;
+    private Town toTown;
     private List<Item> items;
 }

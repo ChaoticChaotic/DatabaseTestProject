@@ -20,4 +20,11 @@ public class TownMapper {
         existedTown.setDistance(townDTO.getDistance());
         return existedTown;
     }
+
+    public TownDTO returnDTO(Town existedTown) {
+        return TownDTO.builder()
+                .name(existedTown.getName())
+                .distance(existedTown.getDistance())
+                .build();
+    }
 }

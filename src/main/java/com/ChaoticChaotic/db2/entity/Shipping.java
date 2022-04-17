@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Objects;
 
 
 @Data
@@ -30,8 +29,11 @@ public class Shipping {
     @Column(name = "end_date")
     private LocalDate endDate;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    private List<Town> towns;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Town fromTown;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Town toTown;
 
     @OneToMany(fetch = FetchType.LAZY)
     private List<Item> items;

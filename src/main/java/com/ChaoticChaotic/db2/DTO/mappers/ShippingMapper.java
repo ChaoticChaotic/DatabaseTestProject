@@ -10,7 +10,8 @@ public class ShippingMapper {
         return Shipping.builder()
                 .startDate(shippingDTO.getStartDate())
                 .endDate(shippingDTO.getEndDate())
-                .towns(shippingDTO.getTowns())
+                .fromTown(shippingDTO.getFromTown())
+                .toTown(shippingDTO.getToTown())
                 .items(shippingDTO.getItems())
                 .build();
     }
@@ -19,7 +20,7 @@ public class ShippingMapper {
         existedShipping.setId(shippingDTO.getId());
         existedShipping.setStartDate(shippingDTO.getStartDate());
         existedShipping.setEndDate(shippingDTO.getEndDate());
-        existedShipping.setTowns(shippingDTO.getTowns());
+        existedShipping.setFromTown(shippingDTO.getFromTown());
         existedShipping.setItems(shippingDTO.getItems());
         return existedShipping;
     }
@@ -29,7 +30,8 @@ public class ShippingMapper {
                 .id(existedShipping.getId())
                 .startDate(existedShipping.getStartDate())
                 .endDate(existedShipping.getEndDate())
-                .towns(existedShipping.getTowns())
+                .fromTown(existedShipping.getFromTown())
+                .toTown(existedShipping.getToTown())
                 .build();
     }
 }

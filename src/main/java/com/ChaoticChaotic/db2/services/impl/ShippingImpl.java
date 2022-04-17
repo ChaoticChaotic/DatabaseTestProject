@@ -1,42 +1,47 @@
 package com.ChaoticChaotic.db2.services.impl;
 
+import com.ChaoticChaotic.db2.DTO.ShippingDTO;
+import com.ChaoticChaotic.db2.DTO.mappers.ShippingMapper;
 import com.ChaoticChaotic.db2.entity.Shipping;
 import com.ChaoticChaotic.db2.exception.BadRequestException;
-import com.ChaoticChaotic.db2.exception.IdNotFoundException;
+import com.ChaoticChaotic.db2.exception.NotFoundException;
 import com.ChaoticChaotic.db2.repository.ShippingRepository;
 import com.ChaoticChaotic.db2.services.ShippingService;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
 public class ShippingImpl implements ShippingService {
-
-
+    
     private ShippingRepository shippingRepository;
+    private ShippingMapper mapper;
 
-    public void addShipping(Shipping shipping) {
-    if (!shipping.getStartDate().isBefore(shipping.getEndDate())){
-            throw new BadRequestException(
-                    "Incorrect shipping dates!"
-            );
-        }
-        shippingRepository.save(shipping);
+    @Override
+    public ShippingDTO saveShippingFromDTO(ShippingDTO shippingDTO) {
+        return Optional.of(mapper.createFromDTO(shippingDTO))
+                .filter(shipping -> !shipping.getStartDate().isBefore(shipping.getEndDate()))
+                .map(shippingRepository::save)
+                .map(mapper::returnDTO)
+                .orElseThrow(() -> new BadRequestException("Incorrect shipping dates!"));
     }
 
-    public void deleteShipping(Long id) {
-        if(!shippingRepository.existsById(id)) {
-            throw new IdNotFoundException(
-                    "Line with id " + id + " does not exists");
-        }
+    @Override
+    public void deleteShippingById(Long id) {
+        shippingRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(
+                        "Shipping with id " + id + " does not exists"));
         shippingRepository.deleteById(id);
     }
 
-    public List<Shipping> showShipping() {
-        return shippingRepository.findAll();
+    @Override
+    public List<Shipping> showAllShipping() {
+        return Optional.of(shippingRepository.findAll())
+                .orElse(Collections.emptyList());
     }
 
 }

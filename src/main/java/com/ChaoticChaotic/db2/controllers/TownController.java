@@ -1,10 +1,10 @@
 package com.ChaoticChaotic.db2.controllers;
 
+import com.ChaoticChaotic.db2.DTO.TownDTO;
 import com.ChaoticChaotic.db2.entity.Town;
 import com.ChaoticChaotic.db2.services.TownService;
-import com.ChaoticChaotic.db2.services.impl.TownImpl;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,8 +27,7 @@ public class TownController {
     }
 
     @PostMapping("/towns")
-    private Long addTown(@RequestBody Town town){
-        townService.addTown(town);
-        return town.getId();
+    private ResponseEntity<TownDTO> addTown(@RequestBody TownDTO townDTO){
+        return ResponseEntity.status(201).body(townService.saveTownFromDTO(townDTO));
     }
 }
