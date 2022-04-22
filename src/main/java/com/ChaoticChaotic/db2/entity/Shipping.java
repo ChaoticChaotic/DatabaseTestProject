@@ -22,19 +22,12 @@ public class Shipping {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "shipping_id", nullable = false)
     private Long id;
-
     @Column(name = "start_date")
     private LocalDate startDate;
-
     @Column(name = "end_date")
     private LocalDate endDate;
-
-    @ManyToOne(fetch = FetchType.LAZY)
     private Town fromTown;
-
-    @ManyToOne(fetch = FetchType.LAZY)
     private Town toTown;
-
     @OneToMany(fetch = FetchType.LAZY)
     private List<Item> items;
 }

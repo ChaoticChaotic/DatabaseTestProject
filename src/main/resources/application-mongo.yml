@@ -1,0 +1,22 @@
+server:
+  port: 8080
+  error:
+    include-message: always
+    include-binding-errors: always
+    include-stacktrace: on_param
+    include-exception: false
+
+spring:
+  application:
+    name: databasetest
+  data:
+    mongodb:
+      authentication-database: admin
+      username: rootuser
+      password: rootpassword
+      database: databasetestproject
+      port: 27017
+      host: localhost
+  output:
+    ansi:
+      enabled: always

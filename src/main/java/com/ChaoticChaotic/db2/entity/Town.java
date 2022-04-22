@@ -22,10 +22,8 @@ public class Town {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "town_id", nullable = false)
     private Long id;
-
     @Column(name = "town_name", length = 30)
     private String name;
-
     @Column(name = "distance", nullable = false)
     private Long distance;
 }

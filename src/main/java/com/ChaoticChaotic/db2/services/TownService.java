@@ -11,4 +11,5 @@ public interface TownService {
     void deleteTown(Long id);
     List<Town> showTowns();
     Town findTownByName(String name);
+    TownDTO editTownById(Long id, TownDTO townDTO);
 }

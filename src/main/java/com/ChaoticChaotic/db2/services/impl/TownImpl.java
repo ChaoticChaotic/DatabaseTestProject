@@ -52,4 +52,13 @@ public class TownImpl implements TownService {
                 .orElseThrow(() -> new NotFoundException("Town with name " + name + " not found"));
     }
 
+    @Override
+    public TownDTO editTownById(Long id, TownDTO townDTO) {
+        return townRepository.findById(id)
+                .map(town -> mapper.mapFromDTO(townDTO, town))
+                .map(townRepository::save)
+                .map(mapper::returnDTO)
+                .orElseThrow(() -> new NotFoundException("Town with id " + id + " not found"));
+    }
+
 }

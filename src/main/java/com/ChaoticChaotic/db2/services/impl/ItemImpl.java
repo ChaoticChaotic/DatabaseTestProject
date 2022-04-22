@@ -44,4 +44,13 @@ public class ItemImpl implements ItemService {
                 .orElse(Collections.emptyList());
     }
 
+    @Override
+    public ItemDTO editItemById(Long id, ItemDTO itemDTO) {
+        return itemRepository.findById(id)
+                .map(item -> mapper.mapFromDTO(itemDTO, item))
+                .map(itemRepository::save)
+                .map(mapper::returnDTO)
+                .orElseThrow(() -> new NotFoundException("Line with id " + id + " does not exists"));
+    }
+
 }

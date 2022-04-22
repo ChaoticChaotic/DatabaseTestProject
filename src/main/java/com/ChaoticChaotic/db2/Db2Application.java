@@ -59,8 +59,9 @@ public class Db2Application {
 			Shipping shipping1 = Shipping.builder()
 					.startDate(date)
 					.endDate(date1)
+					.fromTown(town)
+					.toTown(town1)
 					.items(List.of(item,item1))
-					.towns(List.of(town,town1))
 					.build();
 			shippingRepository.save(shipping1);
 		};

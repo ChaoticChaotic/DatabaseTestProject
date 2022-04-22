@@ -13,27 +13,34 @@ import java.util.stream.Collectors;
 
 @RestController
 @AllArgsConstructor
+@RequestMapping("/town")
 public class TownController {
 
     private TownService townService;
     private TownMapper mapper;
 
-    @GetMapping("/towns")
-    private ResponseEntity<List<TownDTO>> showTowns(){
+    @GetMapping("/town/all")
+    public ResponseEntity<List<TownDTO>> showTowns(){
         return ResponseEntity.ok().body(townService.showTowns()
                 .stream()
                 .map(mapper::returnDTO)
                 .collect(Collectors.toList()));
     }
 
-    @DeleteMapping("/towns/{id}")
-    private ResponseEntity<Object> deleteTown(@PathVariable("id") Long id){
+    @DeleteMapping("/delete")
+    public ResponseEntity<Object> deleteTown(@RequestHeader(value = "townId") Long id){
         townService.deleteTown(id);
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/towns")
-    private ResponseEntity<TownDTO> addTown(@RequestBody TownDTO townDTO){
+    @PostMapping("/save")
+    public ResponseEntity<TownDTO> addTown(@RequestBody TownDTO townDTO){
         return ResponseEntity.status(201).body(townService.saveTownFromDTO(townDTO));
+    }
+
+    @PatchMapping("/edit")
+    public ResponseEntity<TownDTO> editTown(@RequestHeader(value = "townId") Long id,
+                                             @RequestBody TownDTO townDTO) {
+        return ResponseEntity.ok().body(townService.editTownById(id, townDTO));
     }
 }

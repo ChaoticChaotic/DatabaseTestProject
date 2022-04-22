@@ -20,22 +20,28 @@ public class ShippingController {
     private ShippingMapper mapper;
 
     @GetMapping("/all")
-    private ResponseEntity<List<ShippingDTO>> showShipping(){
+    public ResponseEntity<List<ShippingDTO>> showShipping(){
         return ResponseEntity.ok().body(shippingService.showAllShipping()
                 .stream()
                 .map(mapper::returnDTO)
                 .collect(Collectors.toList()));
     }
 
-    @DeleteMapping("/delete/{id}")
-    private ResponseEntity<Object> deleteTown(@PathVariable("id") Long id){
+    @DeleteMapping("/delete")
+    public ResponseEntity<Object> deleteTown(@RequestHeader(value = "shippingId") Long id){
         shippingService.deleteShippingById(id);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/save")
-    private ResponseEntity<ShippingDTO> saveShipping(@RequestBody ShippingDTO shippingDTO){
+    public ResponseEntity<ShippingDTO> saveShipping(@RequestBody ShippingDTO shippingDTO){
         return ResponseEntity.status(201).body(shippingService.saveShippingFromDTO(shippingDTO));
+    }
+
+    @PatchMapping("/edit")
+    public ResponseEntity<ShippingDTO> editShipping(@RequestHeader(value = "shippingId") Long id,
+                                                    @RequestBody ShippingDTO shippingDTO)  {
+        return ResponseEntity.ok().body(shippingService.editShippingById(id, shippingDTO));
     }
 
 }

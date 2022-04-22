@@ -23,10 +23,8 @@ public class Item {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "item_id", nullable = false)
     private Long id;
-
     @Column(name = "item_name", length = 30)
     private String name;
-
     @Column(name = "quantity",nullable = false )
     private Long quantity;
 

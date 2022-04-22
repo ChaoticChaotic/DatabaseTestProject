@@ -11,4 +11,5 @@ public interface ShippingService {
     ShippingDTO saveShippingFromDTO(ShippingDTO shippingDTO);
     void deleteShippingById(Long id);
     List<Shipping> showAllShipping();
+    ShippingDTO editShippingById(Long id, ShippingDTO shippingDTO);
 }

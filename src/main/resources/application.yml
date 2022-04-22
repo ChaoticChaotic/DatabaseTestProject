@@ -8,7 +8,7 @@ server:
 
 spring:
   liquibase:
-    enabled: true
+    enabled: false
   application:
     name: db2
   datasource:
@@ -16,6 +16,7 @@ spring:
     password:
     url: jdbc:postgresql://localhost:5433/user
   jpa:
+    open-in-view: true
     hibernate:
       ddl-auto: create-drop
     properties:

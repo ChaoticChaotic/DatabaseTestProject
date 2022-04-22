@@ -21,6 +21,7 @@ public class ShippingMapper {
         existedShipping.setStartDate(shippingDTO.getStartDate());
         existedShipping.setEndDate(shippingDTO.getEndDate());
         existedShipping.setFromTown(shippingDTO.getFromTown());
+        existedShipping.setToTown(shippingDTO.getToTown());
         existedShipping.setItems(shippingDTO.getItems());
         return existedShipping;
     }
@@ -32,6 +33,7 @@ public class ShippingMapper {
                 .endDate(existedShipping.getEndDate())
                 .fromTown(existedShipping.getFromTown())
                 .toTown(existedShipping.getToTown())
+                .items(existedShipping.getItems())
                 .build();
     }
 }

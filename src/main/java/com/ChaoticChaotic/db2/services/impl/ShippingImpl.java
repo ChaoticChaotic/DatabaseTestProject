@@ -33,8 +33,7 @@ public class ShippingImpl implements ShippingService {
     @Override
     public void deleteShippingById(Long id) {
         shippingRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(
-                        "Shipping with id " + id + " does not exists"));
+                .orElseThrow(() -> new NotFoundException("Shipping with id " + id + " does not exists"));
         shippingRepository.deleteById(id);
     }
 
@@ -42,6 +41,15 @@ public class ShippingImpl implements ShippingService {
     public List<Shipping> showAllShipping() {
         return Optional.of(shippingRepository.findAll())
                 .orElse(Collections.emptyList());
+    }
+
+    @Override
+    public ShippingDTO editShippingById(Long id, ShippingDTO shippingDTO) {
+        return shippingRepository.findById(id)
+                .map(shipping -> mapper.mapFromDTO(shippingDTO, shipping))
+                .map(shippingRepository::save)
+                .map(mapper::returnDTO)
+                .orElseThrow(() -> new NotFoundException("Shipping with id " + id + " does not exists"));
     }
 
 }
