@@ -26,7 +26,9 @@ public class Shipping {
     private LocalDate startDate;
     @Column(name = "end_date")
     private LocalDate endDate;
+    @OneToOne
     private Town fromTown;
+    @OneToOne
     private Town toTown;
     @OneToMany(fetch = FetchType.LAZY)
     private List<Item> items;
