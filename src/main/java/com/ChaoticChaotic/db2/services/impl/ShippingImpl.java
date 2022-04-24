@@ -24,7 +24,7 @@ public class ShippingImpl implements ShippingService {
     @Override
     public ShippingDTO saveShippingFromDTO(ShippingDTO shippingDTO) {
         return Optional.of(mapper.createFromDTO(shippingDTO))
-                .filter(shipping -> !shipping.getStartDate().isBefore(shipping.getEndDate()))
+                .filter(shipping -> shipping.getStartDate().isBefore(shipping.getEndDate()))
                 .map(shippingRepository::save)
                 .map(mapper::returnDTO)
                 .orElseThrow(() -> new BadRequestException("Incorrect shipping dates!"));
