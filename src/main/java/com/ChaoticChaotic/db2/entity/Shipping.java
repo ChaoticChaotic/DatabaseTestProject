@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -16,6 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Table(name = "shipping")
+@Transactional
 public class Shipping {
 
     @Id
@@ -26,10 +28,10 @@ public class Shipping {
     private LocalDate startDate;
     @Column(name = "end_date")
     private LocalDate endDate;
-    @OneToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Town fromTown;
-    @OneToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Town toTown;
-    @OneToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY)
     private List<Item> items;
 }

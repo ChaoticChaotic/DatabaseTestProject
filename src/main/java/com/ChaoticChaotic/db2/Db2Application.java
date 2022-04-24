@@ -64,6 +64,14 @@ public class Db2Application {
 					.items(List.of(item,item1))
 					.build();
 			shippingRepository.save(shipping1);
+			Shipping shipping2 = Shipping.builder()
+					.startDate(date)
+					.endDate(date1)
+					.fromTown(town1)
+					.toTown(town)
+					.items(List.of(item,item1))
+					.build();
+			shippingRepository.save(shipping2);
 		};
 	}
 

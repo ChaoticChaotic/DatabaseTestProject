@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.transaction.Transactional;
 import java.util.Objects;
 import java.util.Set;
 
@@ -16,6 +17,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 @Table(name = "town")
+@Transactional
 public class Town {
 
     @Id
