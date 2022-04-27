@@ -6,8 +6,8 @@
 	<groupId>com.ChaoticChaotic</groupId>
 	<artifactId>db2</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>db2</name>
-	<description>Demo project for Spring Boot</description>
+	<name>DatabaseTestProject</name>
+	<description>Demo project for Spring Boot MVC and JPA</description>
 	<packaging>jar</packaging>
 
 	<properties>

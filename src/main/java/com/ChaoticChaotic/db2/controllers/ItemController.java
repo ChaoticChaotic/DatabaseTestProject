@@ -13,14 +13,14 @@ import java.util.stream.Collectors;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/item")
+@RequestMapping("/api/item")
 public class ItemController {
 
     private ItemService itemService;
     private ItemMapper mapper;
 
     @GetMapping("/all")
-    public ResponseEntity<List<ItemDTO>> showItems(){
+    public ResponseEntity<List<ItemDTO>> getAllItems(){
       return ResponseEntity.ok().body(itemService.showItems()
               .stream()
               .map(mapper::returnDTO)
@@ -39,7 +39,7 @@ public class ItemController {
     }
 
     @PatchMapping("/edit")
-    public ResponseEntity<ItemDTO> editTown(@RequestHeader(value = "itemId") Long id,
+    public ResponseEntity<ItemDTO> editItem(@RequestHeader(value = "itemId") Long id,
                                             @RequestBody ItemDTO itemDTO) {
         return ResponseEntity.ok().body(itemService.editItemById(id, itemDTO));
     }
