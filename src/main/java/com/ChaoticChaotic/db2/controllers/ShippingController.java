@@ -13,14 +13,14 @@ import java.util.stream.Collectors;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/shipping")
+@RequestMapping("/api/shipping")
 public class ShippingController {
 
     private ShippingService shippingService;
     private ShippingMapper mapper;
 
     @GetMapping("/all")
-    public ResponseEntity<List<ShippingDTO>> showShipping(){
+    public ResponseEntity<List<ShippingDTO>> getAllShipping(){
         return ResponseEntity.ok().body(shippingService.showAllShipping()
                 .stream()
                 .map(mapper::returnDTO)

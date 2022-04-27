@@ -13,14 +13,14 @@ import java.util.stream.Collectors;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/town")
+@RequestMapping("/api/town")
 public class TownController {
 
     private TownService townService;
     private TownMapper mapper;
 
-    @GetMapping("/town/all")
-    public ResponseEntity<List<TownDTO>> showTowns(){
+    @GetMapping("/all")
+    public ResponseEntity<List<TownDTO>> getAllTowns(){
         return ResponseEntity.ok().body(townService.showTowns()
                 .stream()
                 .map(mapper::returnDTO)

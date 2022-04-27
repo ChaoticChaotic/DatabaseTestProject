@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class TownDTO {
 
-    private Long id;
     private String name;
     private Long distance;
 }

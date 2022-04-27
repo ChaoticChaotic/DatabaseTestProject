@@ -22,7 +22,6 @@ public class TownMapper {
 
     public TownDTO returnDTO(Town existedTown) {
         return TownDTO.builder()
-                .id(existedTown.getId())
                 .name(existedTown.getName())
                 .distance(existedTown.getDistance())
                 .build();
