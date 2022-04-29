@@ -94,7 +94,7 @@ class TownControllerTest {
     }
 
     @Test
-    void addTown() throws Exception {
+    void canAddTown() throws Exception {
         TownDTO testTownDTO = TownDTO.builder()
                 .name("testName")
                 .distance(0L)
@@ -121,7 +121,7 @@ class TownControllerTest {
     }
 
     @Test
-    void editTown() throws Exception {
+    void canEditTown() throws Exception {
         Town testTown = Town.builder()
                 .name("testName")
                 .distance(0L)

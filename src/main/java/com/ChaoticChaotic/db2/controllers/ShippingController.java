@@ -28,7 +28,7 @@ public class ShippingController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<Object> deleteTown(@RequestHeader(value = "shippingId") Long id){
+    public ResponseEntity<Object> deleteShipping(@RequestHeader(value = "shippingId") Long id){
         shippingService.deleteShippingById(id);
         return ResponseEntity.ok().build();
     }
