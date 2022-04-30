@@ -4,8 +4,6 @@ import com.ChaoticChaotic.db2.DTO.ItemDTO;
 import com.ChaoticChaotic.db2.DTO.mappers.ItemMapper;
 import com.ChaoticChaotic.db2.entity.Item;
 import com.ChaoticChaotic.db2.repository.ItemRepository;
-import com.ChaoticChaotic.db2.services.ItemService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -23,9 +21,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -59,7 +55,7 @@ class ItemControllerTest {
         itemRepository.save(testItem);
         itemRepository.save(testItem1);
 
-        List<ItemDTO> expected = List.of(mapper.returnDTO(testItem),mapper.returnDTO(testItem1));
+        List<ItemDTO> expected = List.of(mapper.returnDTO(testItem), mapper.returnDTO(testItem1));
 
         MvcResult mvcResult = mockMvc
                 .perform(get("/api/item/all")
@@ -72,7 +68,8 @@ class ItemControllerTest {
         mapper.registerModule(new JavaTimeModule());
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         List<ItemDTO> actual = mapper.readValue(mvcResult.getResponse().getContentAsString(),
-                new TypeReference<>() {});
+                new TypeReference<>() {
+                });
 
         assertThat(actual).containsAll(expected);
     }

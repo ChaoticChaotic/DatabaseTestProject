@@ -23,7 +23,6 @@ public class Db2Application {
     }
 
 
-
     CommandLineRunner commandLineRunner(ItemRepository itemRepository,
                                         ShippingRepository shippingRepository,
                                         TownRepository townRepository) {

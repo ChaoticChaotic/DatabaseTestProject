@@ -3,7 +3,6 @@ package com.ChaoticChaotic.db2.controllers;
 import com.ChaoticChaotic.db2.DTO.ItemDTO;
 import com.ChaoticChaotic.db2.DTO.ShippingCreationRequest;
 import com.ChaoticChaotic.db2.DTO.ShippingDTO;
-import com.ChaoticChaotic.db2.DTO.TownDTO;
 import com.ChaoticChaotic.db2.DTO.mappers.ShippingMapper;
 import com.ChaoticChaotic.db2.entity.Item;
 import com.ChaoticChaotic.db2.entity.Shipping;
@@ -17,7 +16,6 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -32,7 +30,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -169,7 +166,7 @@ class ShippingControllerTest {
                 .toTown(testTo.getName())
                 .startDate(LocalDate.now())
                 .endDate(LocalDate.now().plusMonths(2))
-                .itemIds(List.of(testItem.getId(),testItem1.getId()))
+                .itemIds(List.of(testItem.getId(), testItem1.getId()))
                 .build();
 
         ObjectMapper mapper = new ObjectMapper();

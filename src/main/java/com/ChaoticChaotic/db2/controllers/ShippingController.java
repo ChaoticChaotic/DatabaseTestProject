@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,7 +36,7 @@ public class ShippingController {
     }
 
     @PostMapping("/save")
-    public ResponseEntity<ShippingDTO> saveShipping(@RequestBody ShippingCreationRequest request){
+    public ResponseEntity<ShippingDTO> saveShipping(@RequestBody @Valid ShippingCreationRequest request){
         return ResponseEntity.status(201).body(shippingService.saveShippingFromDTO(request));
     }
 
