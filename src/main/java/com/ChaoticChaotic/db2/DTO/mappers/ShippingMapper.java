@@ -1,10 +1,10 @@
 package com.ChaoticChaotic.db2.DTO.mappers;
 
+import com.ChaoticChaotic.db2.DTO.ShippingCreationRequest;
 import com.ChaoticChaotic.db2.DTO.ShippingDTO;
 import com.ChaoticChaotic.db2.entity.Shipping;
-import com.ChaoticChaotic.db2.exception.BadRequestException;
-import com.ChaoticChaotic.db2.repository.ItemRepository;
-import com.ChaoticChaotic.db2.repository.TownRepository;
+import com.ChaoticChaotic.db2.services.ItemService;
+import com.ChaoticChaotic.db2.services.TownService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -14,46 +14,31 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class ShippingMapper {
 
-    private TownRepository townRepository;
-    private ItemRepository itemRepository;
+    private TownService townService;
+    private ItemService itemService;
     private ItemMapper itemMapper;
     private TownMapper townMapper;
 
-    public Shipping createFromDTO(ShippingDTO shippingDTO) {
+    public Shipping createFromRequest(ShippingCreationRequest request) {
         return Shipping.builder()
-                .startDate(shippingDTO.getStartDate())
-                .endDate(shippingDTO.getEndDate())
-                .fromTown(townRepository.findByName(shippingDTO.getFromTown().getName())
-                        .orElseThrow(() -> new BadRequestException("Town with name " +
-                                shippingDTO.getFromTown().getName() +
-                                " not found")))
-                .toTown(townRepository.findByName(shippingDTO.getFromTown().getName())
-                        .orElseThrow(() -> new BadRequestException("Town with name " +
-                                shippingDTO.getFromTown().getName() +
-                                " not found")))
-                .items(shippingDTO.getItems().stream()
-                        .map(itemDTO -> itemRepository.findByName(itemDTO.getName())
-                                .orElseThrow(() -> new BadRequestException("Item not found")))
+                .startDate(request.getStartDate())
+                .endDate(request.getEndDate())
+                .fromTown(townService.findTownByName(request.getFromTown()))
+                .toTown(townService.findTownByName(request.getToTown()))
+                .items(request.getItemIds().stream()
+                        .map(itemId -> itemService.findItemById(itemId))
                         .collect(Collectors.toList()))
                 .build();
     }
 
-    public Shipping mapFromDTO(ShippingDTO shippingDTO, Shipping existedShipping) {
-        existedShipping.setId(shippingDTO.getId());
-        existedShipping.setStartDate(shippingDTO.getStartDate());
-        existedShipping.setEndDate(shippingDTO.getEndDate());
-        existedShipping.setFromTown(townRepository.findByName(shippingDTO.getFromTown().getName())
-                .orElseThrow(() -> new BadRequestException("Town with name " +
-                        shippingDTO.getFromTown().getName() +
-                        " not found")));
-        existedShipping.setToTown(townRepository.findByName(shippingDTO.getToTown().getName())
-                .orElseThrow(() -> new BadRequestException("Town with name " +
-                        shippingDTO.getFromTown().getName() +
-                        " not found")));
-        existedShipping.setItems(shippingDTO.getItems().stream()
-                .map(itemDTO -> itemRepository.findByName(itemDTO.getName())
-                        .orElseThrow(() -> new BadRequestException("Item not found")))
-                .collect(Collectors.toList()));
+    public Shipping mapFromRequest(ShippingCreationRequest request, Shipping existedShipping) {
+        existedShipping.setStartDate(request.getStartDate());
+        existedShipping.setEndDate(request.getEndDate());
+        existedShipping.setFromTown(townService.findTownByName(request.getFromTown()));
+        existedShipping.setToTown(townService.findTownByName(request.getToTown()));
+        existedShipping.setItems(request.getItemIds().stream()
+                        .map(itemId -> itemService.findItemById(itemId))
+                        .collect(Collectors.toList()));
         return existedShipping;
     }
 
@@ -63,7 +48,7 @@ public class ShippingMapper {
                 .startDate(existedShipping.getStartDate())
                 .endDate(existedShipping.getEndDate())
                 .fromTown(townMapper.returnDTO(existedShipping.getFromTown()))
-                .toTown(townMapper.returnDTO(existedShipping.getFromTown()))
+                .toTown(townMapper.returnDTO(existedShipping.getToTown()))
                 .items(existedShipping.getItems().stream()
                         .map(itemMapper::returnDTOInShipping)
                         .collect(Collectors.toList()))

@@ -1,5 +1,6 @@
 package com.ChaoticChaotic.db2.services.impl;
 
+import com.ChaoticChaotic.db2.DTO.ShippingCreationRequest;
 import com.ChaoticChaotic.db2.DTO.ShippingDTO;
 import com.ChaoticChaotic.db2.DTO.mappers.ShippingMapper;
 import com.ChaoticChaotic.db2.entity.Shipping;
@@ -22,8 +23,8 @@ public class ShippingImpl implements ShippingService {
     private ShippingMapper mapper;
 
     @Override
-    public ShippingDTO saveShippingFromDTO(ShippingDTO shippingDTO) {
-        return Optional.of(mapper.createFromDTO(shippingDTO))
+    public ShippingDTO saveShippingFromDTO(ShippingCreationRequest request) {
+        return Optional.of(mapper.createFromRequest(request))
                 .filter(shipping -> shipping.getStartDate().isBefore(shipping.getEndDate()))
                 .map(shippingRepository::save)
                 .map(mapper::returnDTO)
@@ -44,9 +45,9 @@ public class ShippingImpl implements ShippingService {
     }
 
     @Override
-    public ShippingDTO editShippingById(Long id, ShippingDTO shippingDTO) {
+    public ShippingDTO editShippingById(Long id, ShippingCreationRequest request) {
         return shippingRepository.findById(id)
-                .map(shipping -> mapper.mapFromDTO(shippingDTO, shipping))
+                .map(shipping -> mapper.mapFromRequest(request, shipping))
                 .map(shippingRepository::save)
                 .map(mapper::returnDTO)
                 .orElseThrow(() -> new NotFoundException("Shipping with id " + id + " does not exists"));

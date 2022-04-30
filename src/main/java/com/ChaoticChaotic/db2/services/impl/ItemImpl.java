@@ -34,7 +34,7 @@ public class ItemImpl implements ItemService {
     public void deleteItem(Long id) {
         itemRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(
-                        "Line with id " + id + " does not exists"));
+                        "Item with id " + id + " does not exists"));
         itemRepository.deleteById(id);
     }
 
@@ -50,7 +50,13 @@ public class ItemImpl implements ItemService {
                 .map(item -> mapper.mapFromDTO(itemDTO, item))
                 .map(itemRepository::save)
                 .map(mapper::returnDTO)
-                .orElseThrow(() -> new NotFoundException("Line with id " + id + " does not exists"));
+                .orElseThrow(() -> new NotFoundException("Item with id " + id + " does not exists"));
+    }
+
+    @Override
+    public Item findItemById(Long id) {
+        return itemRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Item with id " + id + " does not exists"));
     }
 
 }

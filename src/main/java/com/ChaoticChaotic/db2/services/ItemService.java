@@ -10,4 +10,5 @@ public interface ItemService {
     void deleteItem(Long id);
     List<Item> showItems();
     ItemDTO editItemById(Long id, ItemDTO itemDTO);
+    Item findItemById(Long id);
 }

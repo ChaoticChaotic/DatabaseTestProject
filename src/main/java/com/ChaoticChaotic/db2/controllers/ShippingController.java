@@ -1,5 +1,6 @@
 package com.ChaoticChaotic.db2.controllers;
 
+import com.ChaoticChaotic.db2.DTO.ShippingCreationRequest;
 import com.ChaoticChaotic.db2.DTO.ShippingDTO;
 import com.ChaoticChaotic.db2.DTO.mappers.ShippingMapper;
 import com.ChaoticChaotic.db2.entity.Shipping;
@@ -34,14 +35,14 @@ public class ShippingController {
     }
 
     @PostMapping("/save")
-    public ResponseEntity<ShippingDTO> saveShipping(@RequestBody ShippingDTO shippingDTO){
-        return ResponseEntity.status(201).body(shippingService.saveShippingFromDTO(shippingDTO));
+    public ResponseEntity<ShippingDTO> saveShipping(@RequestBody ShippingCreationRequest request){
+        return ResponseEntity.status(201).body(shippingService.saveShippingFromDTO(request));
     }
 
     @PatchMapping("/edit")
     public ResponseEntity<ShippingDTO> editShipping(@RequestHeader(value = "shippingId") Long id,
-                                                    @RequestBody ShippingDTO shippingDTO)  {
-        return ResponseEntity.ok().body(shippingService.editShippingById(id, shippingDTO));
+                                                    @RequestBody ShippingCreationRequest request)  {
+        return ResponseEntity.ok().body(shippingService.editShippingById(id, request));
     }
 
 }

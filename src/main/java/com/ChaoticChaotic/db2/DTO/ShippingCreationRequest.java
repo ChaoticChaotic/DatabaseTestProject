@@ -14,7 +14,6 @@ import java.util.List;
 @Builder
 public class ShippingCreationRequest {
 
-    private Long id;
     private LocalDate startDate;
     private LocalDate endDate;
     private String fromTown;
