@@ -33,6 +33,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -196,6 +197,89 @@ class ShippingControllerTest {
         assertThat(actual.getEndDate()).isEqualTo(testRequest.getEndDate());
         assertThat(actual.getItems().stream().map(ItemDTO::getId).collect(Collectors.toList()))
                 .isEqualTo(testRequest.getItemIds());
+    }
+
+    @Test
+    void trySaveShippingWithEndDateInThePast() throws Exception {
+        Town testFrom = Town.builder()
+                .name("testFrom")
+                .distance(0L)
+                .build();
+        Town testTo = Town.builder()
+                .name("testTo")
+                .distance(0L)
+                .build();
+        townRepository.save(testFrom);
+        townRepository.save(testTo);
+
+
+        ShippingCreationRequest testRequest = ShippingCreationRequest.builder()
+                .fromTown(testFrom.getName())
+                .toTown(testTo.getName())
+                .startDate(LocalDate.now())
+                .endDate(LocalDate.now().minusMonths(2))
+                .itemIds(List.of())
+                .build();
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
+        ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
+        String requestJson = ow.writeValueAsString(testRequest);
+
+        mockMvc
+                .perform(post("/api/shipping/save")
+                        .contentType(APPLICATION_JSON_VALUE)
+                        .content(requestJson))
+                .andDo(print())
+                .andExpect(MockMvcResultMatchers.status().is4xxClientError())
+                .andExpect(jsonPath("$.endDate")
+                        .value("Invalid Date"))
+                .andExpect(jsonPath("$.status")
+                        .value("ERROR"));
+
+    }
+
+    @Test
+    void trySaveShippingWithStartDateInThePast() throws Exception {
+        Town testFrom = Town.builder()
+                .name("testFrom")
+                .distance(0L)
+                .build();
+        Town testTo = Town.builder()
+                .name("testTo")
+                .distance(0L)
+                .build();
+        townRepository.save(testFrom);
+        townRepository.save(testTo);
+
+
+        ShippingCreationRequest testRequest = ShippingCreationRequest.builder()
+                .fromTown(testFrom.getName())
+                .toTown(testTo.getName())
+                .startDate(LocalDate.now().minusMonths(2))
+                .endDate(LocalDate.now().plusMonths(2))
+                .itemIds(List.of())
+                .build();
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
+        ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
+        String requestJson = ow.writeValueAsString(testRequest);
+
+        mockMvc
+                .perform(post("/api/shipping/save")
+                        .contentType(APPLICATION_JSON_VALUE)
+                        .content(requestJson))
+                .andDo(print())
+                .andExpect(MockMvcResultMatchers.status().is4xxClientError())
+                .andExpect(jsonPath("$.startDate")
+                        .value("Invalid Date"))
+                .andExpect(jsonPath("$.status")
+                        .value("ERROR"));
     }
 
     @Test
