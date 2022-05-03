@@ -49,7 +49,7 @@ public class Db2Application {
             townRepository.save(town);
             townRepository.save(town1);
             LocalDate date = LocalDate.now();
-            LocalDate date1 = LocalDate.of(2022, 05, 21);
+            LocalDate date1 = LocalDate.of(2022, 5, 21);
             Shipping shipping1 = Shipping.builder()
                     .startDate(date)
                     .endDate(date1)

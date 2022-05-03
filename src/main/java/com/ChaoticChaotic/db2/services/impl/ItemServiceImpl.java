@@ -17,7 +17,7 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-public class ItemImpl implements ItemService {
+public class ItemServiceImpl implements ItemService {
 
     private ItemRepository itemRepository;
     private ItemMapper mapper;
@@ -25,9 +25,12 @@ public class ItemImpl implements ItemService {
     @Override
     public ItemDTO saveItemFromDTO(ItemDTO itemDTO) {
         return Optional.of(mapper.createFromDTO(itemDTO))
+                .filter(item -> itemRepository.findByName(itemDTO.getName()).isEmpty())
                 .map(itemRepository::save)
                 .map(mapper::returnDTO)
-                .orElseThrow(() -> new BadRequestException("something went wrong"));
+                .orElseThrow(() -> new BadRequestException("Item with name "
+                        + itemDTO.getName()
+                        + " already exists"));
     }
 
     @Override

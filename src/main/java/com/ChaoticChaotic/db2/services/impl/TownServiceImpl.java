@@ -18,7 +18,7 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-public class TownImpl implements TownService {
+public class TownServiceImpl implements TownService {
 
     private TownRepository townRepository;
     private TownMapper mapper;
@@ -27,16 +27,19 @@ public class TownImpl implements TownService {
     @Override
     public TownDTO saveTownFromDTO(TownDTO townDTO) {
         return Optional.of(mapper.createFromDTO(townDTO))
+                .filter(town -> townRepository.findByName(townDTO.getName()).isEmpty())
                 .map(townRepository::save)
                 .map(mapper::returnDTO)
-                .orElseThrow(() -> new BadRequestException("something went wrong"));
+                .orElseThrow(() -> new BadRequestException("Town with name "
+                        + townDTO.getName()
+                        + " already exists"));
     }
 
     @Override
     public void deleteTown(Long id) {
         townRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(
-                        "Line with id " + id + " does not exists"));
+                        "Town with id " + id + " does not exists"));
         townRepository.deleteById(id);
     }
 
@@ -58,7 +61,7 @@ public class TownImpl implements TownService {
                 .map(town -> mapper.mapFromDTO(townDTO, town))
                 .map(townRepository::save)
                 .map(mapper::returnDTO)
-                .orElseThrow(() -> new NotFoundException("Town with id " + id + " not found"));
+                .orElseThrow(() -> new NotFoundException("Town with id " + id + " does not exists"));
     }
 
 }

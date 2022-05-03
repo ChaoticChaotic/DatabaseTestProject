@@ -3,7 +3,6 @@ package com.ChaoticChaotic.db2.controllers;
 import com.ChaoticChaotic.db2.DTO.ShippingCreationRequest;
 import com.ChaoticChaotic.db2.DTO.ShippingDTO;
 import com.ChaoticChaotic.db2.DTO.mappers.ShippingMapper;
-import com.ChaoticChaotic.db2.entity.Shipping;
 import com.ChaoticChaotic.db2.services.ShippingService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -37,12 +36,12 @@ public class ShippingController {
 
     @PostMapping("/save")
     public ResponseEntity<ShippingDTO> saveShipping(@RequestBody @Valid ShippingCreationRequest request){
-        return ResponseEntity.status(201).body(shippingService.saveShippingFromDTO(request));
+        return ResponseEntity.status(201).body(shippingService.saveShippingFromRequest(request));
     }
 
     @PatchMapping("/edit")
     public ResponseEntity<ShippingDTO> editShipping(@RequestHeader(value = "shippingId") Long id,
-                                                    @RequestBody ShippingCreationRequest request)  {
+                                                    @RequestBody @Valid ShippingCreationRequest request)  {
         return ResponseEntity.ok().body(shippingService.editShippingById(id, request));
     }
 

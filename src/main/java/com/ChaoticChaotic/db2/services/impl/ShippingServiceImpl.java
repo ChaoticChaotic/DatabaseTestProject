@@ -17,13 +17,13 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-public class ShippingImpl implements ShippingService {
+public class ShippingServiceImpl implements ShippingService {
     
     private ShippingRepository shippingRepository;
     private ShippingMapper mapper;
 
     @Override
-    public ShippingDTO saveShippingFromDTO(ShippingCreationRequest request) {
+    public ShippingDTO saveShippingFromRequest(ShippingCreationRequest request) {
         return Optional.of(mapper.createFromRequest(request))
                 .filter(shipping -> shipping.getStartDate().isBefore(shipping.getEndDate()))
                 .map(shippingRepository::save)

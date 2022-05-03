@@ -9,7 +9,7 @@ import java.util.List;
 
 
 public interface ShippingService {
-    ShippingDTO saveShippingFromDTO(ShippingCreationRequest request);
+    ShippingDTO saveShippingFromRequest(ShippingCreationRequest request);
     void deleteShippingById(Long id);
     List<Shipping> showAllShipping();
     ShippingDTO editShippingById(Long id, ShippingCreationRequest request);
