@@ -56,7 +56,7 @@ class ShippingControllerTest {
     }
 
     @Test
-    void getAllShipping() throws Exception {
+    void canGetAllShipping() throws Exception {
         Town testFrom = Town.builder()
                 .name("testFrom")
                 .distance(0L)
@@ -105,7 +105,7 @@ class ShippingControllerTest {
     }
 
     @Test
-    void deleteShipping() throws Exception {
+    void canDeleteShipping() throws Exception {
         Town testFrom = Town.builder()
                 .name("testFrom")
                 .distance(0L)
