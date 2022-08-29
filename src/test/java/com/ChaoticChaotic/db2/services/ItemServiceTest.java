@@ -51,26 +51,6 @@ class ItemServiceTest extends Db2ApplicationTests {
     }
 
     @Test
-    void trySaveItemFromDTOWithNameAlreadyTakenThenException() {
-        Item testItem = Item.builder()
-                .name("testName")
-                .quantity(0L)
-                .build();
-        itemRepository.save(testItem);
-
-        ItemDTO testItemDTO = ItemDTO.builder()
-                .name("testName")
-                .quantity(0L)
-                .build();
-
-        assertThatThrownBy(() -> underTest.saveFromDTO(testItemDTO))
-                .isInstanceOf(BadRequestException.class)
-                .hasMessage(("Item with name "
-                        + testItemDTO.getName()
-                        + " already exists"));
-    }
-
-    @Test
     void canDeleteItem() {
         Item testItem = Item.builder()
                 .name("testName")
