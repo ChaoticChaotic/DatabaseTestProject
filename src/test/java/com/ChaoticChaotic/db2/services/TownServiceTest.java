@@ -2,6 +2,7 @@ package com.ChaoticChaotic.db2.services;
 
 import com.ChaoticChaotic.db2.DTO.TownDTO;
 import com.ChaoticChaotic.db2.DTO.mappers.TownMapper;
+import com.ChaoticChaotic.db2.Db2ApplicationTests;
 import com.ChaoticChaotic.db2.entity.Town;
 import com.ChaoticChaotic.db2.exception.BadRequestException;
 import com.ChaoticChaotic.db2.exception.NotFoundException;
@@ -10,16 +11,16 @@ import com.ChaoticChaotic.db2.services.impl.TownServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@SpringBootTest
-class TownServiceTest {
+class TownServiceTest extends Db2ApplicationTests {
 
     @Autowired
     TownRepository townRepository;
@@ -40,7 +41,7 @@ class TownServiceTest {
                 .distance(0L)
                 .build();
 
-        underTest.saveTownFromDTO(testTownDTO);
+        underTest.saveFromDTO(testTownDTO);
 
         Optional<Town> actual = townRepository.findByName(testTownDTO.getName());
 
@@ -62,7 +63,7 @@ class TownServiceTest {
         townRepository.save(testTown);
 
 
-        assertThatThrownBy(() -> underTest.saveTownFromDTO(testTownDTO))
+        assertThatThrownBy(() -> underTest.saveFromDTO(testTownDTO))
                 .isInstanceOf(BadRequestException.class)
                 .hasMessage(("Town with name "
                         + testTownDTO.getName()
@@ -77,7 +78,7 @@ class TownServiceTest {
                 .build();
         townRepository.save(testTown);
 
-        underTest.deleteTown(testTown.getId());
+        underTest.delete(testTown.getId());
 
         Optional<Town> actual = townRepository.findByName(testTown.getName());
 
@@ -88,7 +89,7 @@ class TownServiceTest {
     void tryDeleteTownWithNonexistentIdThenException() {
         Long nonexistentId = 1L;
 
-        assertThatThrownBy(() -> underTest.deleteTown(nonexistentId))
+        assertThatThrownBy(() -> underTest.delete(nonexistentId))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessage(("Town with id " + nonexistentId + " does not exists"));
 
@@ -107,16 +108,17 @@ class TownServiceTest {
         townRepository.save(testTown);
         townRepository.save(testTown1);
 
-        List<Town> expected = List.of(testTown, testTown1);
+        List<TownDTO> expected = Stream.of(testTown, testTown1)
+                .map(mapper::returnDTO).collect(Collectors.toList());
 
-        List<Town> actual = underTest.showTowns();
+        List<TownDTO> actual = underTest.show();
 
         assertThat(actual).containsAll(expected);
     }
 
     @Test
     void canShowTownsWhenNothingPresentThenException() {
-        List<Town> actual = underTest.showTowns();
+        List<TownDTO> actual = underTest.show();
 
         assertThat(actual).isEmpty();
     }
@@ -129,7 +131,7 @@ class TownServiceTest {
                 .build();
         townRepository.save(testTown);
 
-        Town actual = underTest.findTownByName(testTown.getName());
+        Town actual = underTest.findByName(testTown.getName());
 
         assertThat(actual).isEqualTo(testTown);
     }
@@ -138,7 +140,7 @@ class TownServiceTest {
     void tryFindTownByNameNonexistentIdThenException() {
         String nonexistentName = "Nonexistent";
 
-        assertThatThrownBy(() -> underTest.findTownByName(nonexistentName))
+        assertThatThrownBy(() -> underTest.findByName(nonexistentName))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessage(("Town with name " + nonexistentName + " not found"));
     }
@@ -156,7 +158,7 @@ class TownServiceTest {
                 .distance(1L)
                 .build();
 
-        TownDTO actual = underTest.editTownById(testTown.getId(), testTownDTO);
+        TownDTO actual = underTest.editById(testTown.getId(), testTownDTO);
 
         assertThat(actual.getName()).isEqualTo(testTownDTO.getName());
         assertThat(actual.getDistance()).isEqualTo(testTownDTO.getDistance());
@@ -171,7 +173,7 @@ class TownServiceTest {
                 .distance(1L)
                 .build();
 
-        assertThatThrownBy(() -> underTest.editTownById(nonexistentId, testTownDTO))
+        assertThatThrownBy(() -> underTest.editById(nonexistentId, testTownDTO))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessage(("Town with id " + nonexistentId + " does not exists"));
     }

@@ -7,9 +7,9 @@ import com.ChaoticChaotic.db2.entity.Town;
 import java.util.List;
 
 public interface TownService {
-    TownDTO saveTownFromDTO(TownDTO townDTO);
-    void deleteTown(Long id);
-    List<Town> showTowns();
-    Town findTownByName(String name);
-    TownDTO editTownById(Long id, TownDTO townDTO);
+    TownDTO saveFromDTO(TownDTO townDTO);
+    void delete(Long id);
+    List<TownDTO> show();
+    Town findByName(String name);
+    TownDTO editById(Long id, TownDTO townDTO);
 }

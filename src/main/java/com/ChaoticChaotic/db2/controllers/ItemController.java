@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @AllArgsConstructor
@@ -20,28 +19,25 @@ public class ItemController {
     private ItemMapper mapper;
 
     @GetMapping("/all")
-    public ResponseEntity<List<ItemDTO>> getAllItems(){
-      return ResponseEntity.ok().body(itemService.showItems()
-              .stream()
-              .map(mapper::returnDTO)
-              .collect(Collectors.toList()));
-    }
-
-    @DeleteMapping("/delete")
-    public ResponseEntity<Object> deleteItem(@RequestHeader(value = "itemId") Long id){
-        itemService.deleteItem(id);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<List<ItemDTO>> getAll(){
+      return ResponseEntity.ok().body(itemService.show());
     }
 
     @PostMapping("/save")
-    public ResponseEntity<ItemDTO> saveItem(@RequestBody ItemDTO itemDTO){
-        return ResponseEntity.status(201).body(itemService.saveItemFromDTO(itemDTO));
+    public ResponseEntity<ItemDTO> save(@RequestBody ItemDTO itemDTO){
+        return ResponseEntity.status(201).body(itemService.saveFromDTO(itemDTO));
     }
 
-    @PatchMapping("/edit")
-    public ResponseEntity<ItemDTO> editItem(@RequestHeader(value = "itemId") Long id,
-                                            @RequestBody ItemDTO itemDTO) {
-        return ResponseEntity.ok().body(itemService.editItemById(id, itemDTO));
+    @DeleteMapping("/delete/{itemId}")
+    public ResponseEntity<Object> delete(@PathVariable(value = "itemId") Long id){
+        itemService.delete(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/edit/{itemId}")
+    public ResponseEntity<ItemDTO> edit(@PathVariable(value = "itemId") Long id,
+                                        @RequestBody ItemDTO itemDTO) {
+        return ResponseEntity.ok().body(itemService.editById(id, itemDTO));
     }
 
 }

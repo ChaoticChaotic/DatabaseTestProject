@@ -1,4 +1,4 @@
-package com.ChaoticChaotic.db2.controllers;
+package com.ChaoticChaotic.db2.controllers.errorhandling;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

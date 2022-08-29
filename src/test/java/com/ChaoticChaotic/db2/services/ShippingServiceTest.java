@@ -4,6 +4,7 @@ import com.ChaoticChaotic.db2.DTO.ItemDTO;
 import com.ChaoticChaotic.db2.DTO.ShippingCreationRequest;
 import com.ChaoticChaotic.db2.DTO.ShippingDTO;
 import com.ChaoticChaotic.db2.DTO.mappers.ShippingMapper;
+import com.ChaoticChaotic.db2.Db2ApplicationTests;
 import com.ChaoticChaotic.db2.entity.Item;
 import com.ChaoticChaotic.db2.entity.Shipping;
 import com.ChaoticChaotic.db2.entity.Town;
@@ -16,20 +17,17 @@ import com.ChaoticChaotic.db2.services.impl.ShippingServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
-class ShippingServiceTest {
+class ShippingServiceTest extends Db2ApplicationTests {
 
     @Autowired
     ShippingRepository shippingRepository;
@@ -81,7 +79,7 @@ class ShippingServiceTest {
                 .itemIds(List.of(testItem.getId(), testItem1.getId()))
                 .build();
 
-        ShippingDTO actual = underTest.saveShippingFromRequest(testRequest);
+        ShippingDTO actual = underTest.saveFromRequest(testRequest);
 
         assertThat(actual.getFromTown().getName()).isEqualTo(testRequest.getFromTown());
         assertThat(actual.getToTown().getName()).isEqualTo(testRequest.getToTown());
@@ -123,7 +121,7 @@ class ShippingServiceTest {
                 .itemIds(List.of(testItem.getId(), testItem1.getId()))
                 .build();
 
-        assertThatThrownBy(() -> underTest.saveShippingFromRequest(testRequest))
+        assertThatThrownBy(() -> underTest.saveFromRequest(testRequest))
                 .isInstanceOf(BadRequestException.class)
                 .hasMessage(("Incorrect shipping dates!"));
     }
@@ -150,7 +148,7 @@ class ShippingServiceTest {
                 .build();
         shippingRepository.save(testShipping);
 
-        underTest.deleteShippingById(testShipping.getId());
+        underTest.deleteById(testShipping.getId());
         Optional<Shipping> actual = shippingRepository.findById(testShipping.getId());
 
         assertThat(actual).isEmpty();
@@ -160,7 +158,7 @@ class ShippingServiceTest {
     void tryDeleteShippingWithNonexistentIdThenException() {
         Long nonexistentId = 1L;
 
-        assertThatThrownBy(() -> underTest.deleteShippingById(nonexistentId))
+        assertThatThrownBy(() -> underTest.deleteById(nonexistentId))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessage(("Shipping with id " + nonexistentId + " does not exists"));
     }
@@ -195,16 +193,17 @@ class ShippingServiceTest {
         shippingRepository.save(testShipping);
         shippingRepository.save(testShipping1);
 
-        List<Shipping> expected = List.of(testShipping, testShipping1);
+        List<ShippingDTO> expected = Stream.of(testShipping, testShipping1)
+                .map(mapper::returnDTO).collect(Collectors.toList());;
 
-        List<Shipping> actual = underTest.showAllShipping();
+        List<ShippingDTO> actual = underTest.showAll();
 
         assertThat(actual).containsAll(expected);
     }
 
     @Test
     void canShowAllShippingWhenNothingPresented() {
-        List<Shipping> actual = underTest.showAllShipping();
+        List<ShippingDTO> actual = underTest.showAll();
 
         assertThat(actual).isEmpty();
     }
@@ -261,7 +260,7 @@ class ShippingServiceTest {
                 .itemIds(List.of(testItem.getId(), testItem1.getId()))
                 .build();
 
-        ShippingDTO actual = underTest.editShippingById(testShipping.getId(), testRequest);
+        ShippingDTO actual = underTest.editById(testShipping.getId(), testRequest);
 
         assertThat(actual.getFromTown().getName()).isEqualTo(testRequest.getFromTown());
         assertThat(actual.getToTown().getName()).isEqualTo(testRequest.getToTown());
@@ -294,7 +293,7 @@ class ShippingServiceTest {
                 .itemIds(List.of())
                 .build();
 
-        assertThatThrownBy(() -> underTest.editShippingById(nonexistentId, testRequest))
+        assertThatThrownBy(() -> underTest.editById(nonexistentId, testRequest))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessage(("Shipping with id " + nonexistentId + " does not exists"));
     }

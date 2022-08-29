@@ -9,6 +9,8 @@ import com.ChaoticChaotic.db2.repository.ItemRepository;
 import com.ChaoticChaotic.db2.services.ItemService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 
 import java.util.Collections;
 import java.util.List;
@@ -17,24 +19,22 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
+@Transactional
 public class ItemServiceImpl implements ItemService {
 
     private ItemRepository itemRepository;
     private ItemMapper mapper;
 
     @Override
-    public ItemDTO saveItemFromDTO(ItemDTO itemDTO) {
+    public ItemDTO saveFromDTO(ItemDTO itemDTO) {
         return Optional.of(mapper.createFromDTO(itemDTO))
-                .filter(item -> itemRepository.findByName(itemDTO.getName()).isEmpty())
                 .map(itemRepository::save)
                 .map(mapper::returnDTO)
-                .orElseThrow(() -> new BadRequestException("Item with name "
-                        + itemDTO.getName()
-                        + " already exists"));
+                .orElseThrow(() -> new BadRequestException("Something goes wrong!"));
     }
 
     @Override
-    public void deleteItem(Long id) {
+    public void delete(Long id) {
         itemRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(
                         "Item with id " + id + " does not exists"));
@@ -42,13 +42,15 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<Item> showItems() {
+    @Transactional(readOnly = true)
+    public List<ItemDTO> show() {
         return Optional.of(itemRepository.findAll())
+                .map(mapper::returnListDTO)
                 .orElse(Collections.emptyList());
     }
 
     @Override
-    public ItemDTO editItemById(Long id, ItemDTO itemDTO) {
+    public ItemDTO editById(Long id, ItemDTO itemDTO) {
         return itemRepository.findById(id)
                 .map(item -> mapper.mapFromDTO(itemDTO, item))
                 .map(itemRepository::save)
@@ -57,7 +59,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Item findItemById(Long id) {
+    public Item findById(Long id) {
         return itemRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Item with id " + id + " does not exists"));
     }

@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -17,16 +16,23 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Table(name = "shipping")
-@Transactional
 public class Shipping {
 
+    @SequenceGenerator(
+            name = "shipping_sequence",
+            sequenceName = "shipping_sequence",
+            allocationSize = 1
+    )
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "shipping_id", nullable = false)
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "shipping_sequence"
+    )
+    @Column(nullable = false)
     private Long id;
-    @Column(name = "start_date")
+    @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
-    @Column(name = "end_date")
+    @Column(name = "end_date", nullable = false)
     private LocalDate endDate;
     @ManyToOne(fetch = FetchType.LAZY)
     private Town fromTown;

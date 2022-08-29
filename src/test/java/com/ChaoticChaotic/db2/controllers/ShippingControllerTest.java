@@ -4,6 +4,7 @@ import com.ChaoticChaotic.db2.DTO.ItemDTO;
 import com.ChaoticChaotic.db2.DTO.ShippingCreationRequest;
 import com.ChaoticChaotic.db2.DTO.ShippingDTO;
 import com.ChaoticChaotic.db2.DTO.mappers.ShippingMapper;
+import com.ChaoticChaotic.db2.Db2ApplicationTests;
 import com.ChaoticChaotic.db2.entity.Item;
 import com.ChaoticChaotic.db2.entity.Shipping;
 import com.ChaoticChaotic.db2.entity.Town;
@@ -18,8 +19,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -35,9 +34,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-class ShippingControllerTest {
+class ShippingControllerTest extends Db2ApplicationTests {
 
     @Autowired
     MockMvc mockMvc;
@@ -54,6 +51,8 @@ class ShippingControllerTest {
     @BeforeEach
     void setUp() {
         shippingRepository.deleteAll();
+        townRepository.deleteAll();
+        itemRepository.deleteAll();
     }
 
     @Test
@@ -103,39 +102,6 @@ class ShippingControllerTest {
                 });
 
         assertThat(actual).containsAll(expected);
-    }
-
-    @Test
-    void canDeleteShipping() throws Exception {
-        Town testFrom = Town.builder()
-                .name("testFrom")
-                .distance(0L)
-                .build();
-        Town testTo = Town.builder()
-                .name("testTo")
-                .distance(0L)
-                .build();
-        townRepository.save(testFrom);
-        townRepository.save(testTo);
-        Shipping testShipping = Shipping.builder()
-                .startDate(LocalDate.now())
-                .endDate(LocalDate.now().plusMonths(2))
-                .fromTown(testFrom)
-                .toTown(testTo)
-                .items(List.of())
-                .build();
-        shippingRepository.save(testShipping);
-
-
-        mockMvc
-                .perform(delete("/api/shipping/delete")
-                        .contentType(APPLICATION_JSON_VALUE)
-                        .header("shippingId", testShipping.getId()))
-                .andDo(print())
-                .andExpect(MockMvcResultMatchers.status().isOk());
-
-        Optional<Shipping> actual = shippingRepository.findById(testShipping.getId());
-        assertThat(actual).isEmpty();
     }
 
     @Test
@@ -283,6 +249,38 @@ class ShippingControllerTest {
     }
 
     @Test
+    void canDeleteShipping() throws Exception {
+        Town testFrom = Town.builder()
+                .name("testFrom")
+                .distance(0L)
+                .build();
+        Town testTo = Town.builder()
+                .name("testTo")
+                .distance(0L)
+                .build();
+        townRepository.save(testFrom);
+        townRepository.save(testTo);
+        Shipping testShipping = Shipping.builder()
+                .startDate(LocalDate.now())
+                .endDate(LocalDate.now().plusMonths(2))
+                .fromTown(testFrom)
+                .toTown(testTo)
+                .items(List.of())
+                .build();
+        shippingRepository.save(testShipping);
+
+
+        mockMvc
+                .perform(delete("/api/shipping/delete/" + testShipping.getId())
+                        .contentType(APPLICATION_JSON_VALUE))
+                .andDo(print())
+                .andExpect(MockMvcResultMatchers.status().isOk());
+
+        Optional<Shipping> actual = shippingRepository.findById(testShipping.getId());
+        assertThat(actual).isEmpty();
+    }
+
+    @Test
     void canEditShipping() throws Exception {
         Town testFrom = Town.builder()
                 .name("testFrom")
@@ -333,10 +331,9 @@ class ShippingControllerTest {
         String requestJson = ow.writeValueAsString(testRequest);
 
         MvcResult mvcResult = mockMvc
-                .perform(patch("/api/shipping/edit")
+                .perform(patch("/api/shipping/edit/" + testShipping.getId())
                         .contentType(APPLICATION_JSON_VALUE)
-                        .content(requestJson)
-                        .header("shippingId", testShipping.getId()))
+                        .content(requestJson))
                 .andDo(print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();

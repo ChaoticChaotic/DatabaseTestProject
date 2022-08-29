@@ -2,6 +2,7 @@ package com.ChaoticChaotic.db2.controllers;
 
 import com.ChaoticChaotic.db2.DTO.ItemDTO;
 import com.ChaoticChaotic.db2.DTO.mappers.ItemMapper;
+import com.ChaoticChaotic.db2.Db2ApplicationTests;
 import com.ChaoticChaotic.db2.entity.Item;
 import com.ChaoticChaotic.db2.repository.ItemRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -12,8 +13,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -26,9 +25,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-class ItemControllerTest {
+class ItemControllerTest extends Db2ApplicationTests {
 
     @Autowired
     MockMvc mockMvc;
@@ -75,25 +72,6 @@ class ItemControllerTest {
     }
 
     @Test
-    void canDeleteItem() throws Exception {
-        Item testItem = Item.builder()
-                .name("testName")
-                .quantity(0L)
-                .build();
-        itemRepository.save(testItem);
-
-        mockMvc
-                .perform(delete("/api/item/delete")
-                        .contentType(APPLICATION_JSON_VALUE)
-                        .header("itemId", testItem.getId()))
-                .andDo(print())
-                .andExpect(MockMvcResultMatchers.status().isOk());
-
-        Optional<Item> actual = itemRepository.findById(testItem.getId());
-        assertThat(actual).isEmpty();
-    }
-
-    @Test
     void canSaveItem() throws Exception {
         ItemDTO testItemDTO = ItemDTO.builder()
                 .name("testName")
@@ -121,6 +99,25 @@ class ItemControllerTest {
     }
 
     @Test
+    void canDeleteItem() throws Exception {
+        Item testItem = Item.builder()
+                .name("testName")
+                .quantity(0L)
+                .build();
+        itemRepository.save(testItem);
+
+        mockMvc
+                .perform(delete("/api/item/delete/" + testItem.getId())
+                        .contentType(APPLICATION_JSON_VALUE))
+                .andDo(print())
+                .andExpect(MockMvcResultMatchers.status().isOk());
+
+        Optional<Item> actual = itemRepository.findById(testItem.getId());
+        assertThat(actual).isEmpty();
+    }
+
+
+    @Test
     void canEditTown() throws Exception {
         Item testItem = Item.builder()
                 .name("testName")
@@ -142,8 +139,7 @@ class ItemControllerTest {
 
 
         mockMvc
-                .perform(patch("/api/item/edit")
-                        .header("itemId", testItem.getId())
+                .perform(patch("/api/item/edit/" + testItem.getId())
                         .contentType(APPLICATION_JSON_VALUE)
                         .content(requestJson))
                 .andDo(print())

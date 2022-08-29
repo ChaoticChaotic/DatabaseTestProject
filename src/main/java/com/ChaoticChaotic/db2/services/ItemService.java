@@ -6,9 +6,9 @@ import com.ChaoticChaotic.db2.entity.Item;
 import java.util.List;
 
 public interface ItemService {
-    ItemDTO saveItemFromDTO(ItemDTO itemDto);
-    void deleteItem(Long id);
-    List<Item> showItems();
-    ItemDTO editItemById(Long id, ItemDTO itemDTO);
-    Item findItemById(Long id);
+    ItemDTO saveFromDTO(ItemDTO itemDto);
+    void delete(Long id);
+    List<ItemDTO> show();
+    ItemDTO editById(Long id, ItemDTO itemDTO);
+    Item findById(Long id);
 }

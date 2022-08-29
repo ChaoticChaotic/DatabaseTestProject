@@ -2,6 +2,7 @@ package com.ChaoticChaotic.db2.services;
 
 import com.ChaoticChaotic.db2.DTO.ItemDTO;
 import com.ChaoticChaotic.db2.DTO.mappers.ItemMapper;
+import com.ChaoticChaotic.db2.Db2ApplicationTests;
 import com.ChaoticChaotic.db2.entity.Item;
 import com.ChaoticChaotic.db2.exception.BadRequestException;
 import com.ChaoticChaotic.db2.exception.NotFoundException;
@@ -9,21 +10,19 @@ import com.ChaoticChaotic.db2.repository.ItemRepository;
 import com.ChaoticChaotic.db2.services.impl.ItemServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@SpringBootTest
-class ItemServiceTest {
+class ItemServiceTest extends Db2ApplicationTests {
 
     @Autowired
-    @Spy
     ItemRepository itemRepository;
     @Autowired
     ItemMapper mapper;
@@ -42,7 +41,7 @@ class ItemServiceTest {
                 .quantity(0L)
                 .build();
 
-        underTest.saveItemFromDTO(testItemDTO);
+        underTest.saveFromDTO(testItemDTO);
 
         Optional<Item> actual = itemRepository.findByName(testItemDTO.getName());
 
@@ -64,7 +63,7 @@ class ItemServiceTest {
                 .quantity(0L)
                 .build();
 
-        assertThatThrownBy(() -> underTest.saveItemFromDTO(testItemDTO))
+        assertThatThrownBy(() -> underTest.saveFromDTO(testItemDTO))
                 .isInstanceOf(BadRequestException.class)
                 .hasMessage(("Item with name "
                         + testItemDTO.getName()
@@ -79,7 +78,7 @@ class ItemServiceTest {
                 .build();
         itemRepository.save(testItem);
 
-        underTest.deleteItem(testItem.getId());
+        underTest.delete(testItem.getId());
 
         Optional<Item> actual = itemRepository.findById(testItem.getId());
 
@@ -90,7 +89,7 @@ class ItemServiceTest {
     void tryDeleteItemWithIdNonexistentThenException() {
         Long nonexistentItemId = 1L;
 
-        assertThatThrownBy(() -> underTest.deleteItem(nonexistentItemId))
+        assertThatThrownBy(() -> underTest.delete(nonexistentItemId))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessage(("Item with id " + nonexistentItemId + " does not exists"));
     }
@@ -108,16 +107,17 @@ class ItemServiceTest {
         itemRepository.save(testItem);
         itemRepository.save(testItem1);
 
-        List<Item> expected = List.of(testItem, testItem1);
+        List<ItemDTO> expected = Stream.of(testItem, testItem1)
+                .map(mapper::returnDTO).collect(Collectors.toList());
 
-        List<Item> actual = underTest.showItems();
+        List<ItemDTO> actual = underTest.show();
 
         assertThat(actual).containsAll(expected);
     }
 
     @Test
     void canShowItemsWhenNothingPresent() {
-        List<Item> actual = underTest.showItems();
+        List<ItemDTO> actual = underTest.show();
 
         assertThat(actual).isEmpty();
     }
@@ -135,7 +135,7 @@ class ItemServiceTest {
                 .quantity(1L)
                 .build();
 
-        ItemDTO actual = underTest.editItemById(testItem.getId(), testItemDTO);
+        ItemDTO actual = underTest.editById(testItem.getId(), testItemDTO);
 
         assertThat(actual.getName()).isEqualTo(testItemDTO.getName());
         assertThat(actual.getQuantity()).isEqualTo(testItemDTO.getQuantity());
@@ -150,7 +150,7 @@ class ItemServiceTest {
                 .quantity(1L)
                 .build();
 
-        assertThatThrownBy(() -> underTest.editItemById(nonexistentItemId, testItemDTO))
+        assertThatThrownBy(() -> underTest.editById(nonexistentItemId, testItemDTO))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessage(("Item with id " + nonexistentItemId + " does not exists"));
     }
@@ -163,7 +163,7 @@ class ItemServiceTest {
                 .build();
         itemRepository.save(testItem);
 
-        Item actual = underTest.findItemById(testItem.getId());
+        Item actual = underTest.findById(testItem.getId());
 
         assertThat(actual).isEqualTo(testItem);
     }
@@ -172,7 +172,7 @@ class ItemServiceTest {
     void tryFindItemWithIdNonexistentIdThenException() {
         Long nonexistentItemId = 1L;
 
-        assertThatThrownBy(() -> underTest.findItemById(nonexistentItemId))
+        assertThatThrownBy(() -> underTest.findById(nonexistentItemId))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessage(("Item with id " + nonexistentItemId + " does not exists"));
     }

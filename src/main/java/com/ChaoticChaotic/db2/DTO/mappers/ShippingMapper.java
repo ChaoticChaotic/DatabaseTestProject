@@ -8,6 +8,7 @@ import com.ChaoticChaotic.db2.services.TownService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
@@ -23,10 +24,10 @@ public class ShippingMapper {
         return Shipping.builder()
                 .startDate(request.getStartDate())
                 .endDate(request.getEndDate())
-                .fromTown(townService.findTownByName(request.getFromTown()))
-                .toTown(townService.findTownByName(request.getToTown()))
+                .fromTown(townService.findByName(request.getFromTown()))
+                .toTown(townService.findByName(request.getToTown()))
                 .items(request.getItemIds().stream()
-                        .map(itemId -> itemService.findItemById(itemId))
+                        .map(itemId -> itemService.findById(itemId))
                         .collect(Collectors.toList()))
                 .build();
     }
@@ -34,10 +35,10 @@ public class ShippingMapper {
     public Shipping mapFromRequest(ShippingCreationRequest request, Shipping existedShipping) {
         existedShipping.setStartDate(request.getStartDate());
         existedShipping.setEndDate(request.getEndDate());
-        existedShipping.setFromTown(townService.findTownByName(request.getFromTown()));
-        existedShipping.setToTown(townService.findTownByName(request.getToTown()));
+        existedShipping.setFromTown(townService.findByName(request.getFromTown()));
+        existedShipping.setToTown(townService.findByName(request.getToTown()));
         existedShipping.setItems(request.getItemIds().stream()
-                        .map(itemId -> itemService.findItemById(itemId))
+                        .map(itemId -> itemService.findById(itemId))
                         .collect(Collectors.toList()));
         return existedShipping;
     }
@@ -53,5 +54,9 @@ public class ShippingMapper {
                         .map(itemMapper::returnDTOInShipping)
                         .collect(Collectors.toList()))
                 .build();
+    }
+
+    public List<ShippingDTO> returnListDTO(List<Shipping> shippings) {
+        return shippings.stream().map(this::returnDTO).collect(Collectors.toList());
     }
 }

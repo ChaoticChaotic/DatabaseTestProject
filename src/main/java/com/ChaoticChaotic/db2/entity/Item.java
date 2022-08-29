@@ -18,12 +18,19 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 @Table(name = "item")
-@Transactional
 public class Item {
 
+    @SequenceGenerator(
+            name = "item_sequence",
+            sequenceName = "item_sequence",
+            allocationSize = 1
+    )
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "item_id", nullable = false)
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "item_sequence"
+    )
+    @Column(nullable = false)
     private Long id;
     @Column(name = "item_name", length = 30)
     private String name;

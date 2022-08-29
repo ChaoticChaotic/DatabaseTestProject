@@ -2,6 +2,7 @@ package com.ChaoticChaotic.db2.controllers;
 
 import com.ChaoticChaotic.db2.DTO.TownDTO;
 import com.ChaoticChaotic.db2.DTO.mappers.TownMapper;
+import com.ChaoticChaotic.db2.Db2ApplicationTests;
 import com.ChaoticChaotic.db2.entity.Town;
 import com.ChaoticChaotic.db2.repository.TownRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -12,8 +13,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -26,9 +25,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-class TownControllerTest {
+class TownControllerTest extends Db2ApplicationTests {
 
     @Autowired
     MockMvc mockMvc;
@@ -83,9 +80,8 @@ class TownControllerTest {
         townRepository.save(testTown);
 
         mockMvc
-                .perform(delete("/api/town/delete")
-                        .contentType(APPLICATION_JSON_VALUE)
-                        .header("townId", testTown.getId()))
+                .perform(delete("/api/town/delete/" + testTown.getId())
+                        .contentType(APPLICATION_JSON_VALUE))
                 .andDo(print())
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
@@ -141,8 +137,7 @@ class TownControllerTest {
 
 
         mockMvc
-                .perform(patch("/api/town/edit")
-                        .header("townId", testTown.getId())
+                .perform(patch("/api/town/edit/" + testTown.getId())
                         .contentType(APPLICATION_JSON_VALUE)
                         .content(requestJson))
                 .andDo(print())

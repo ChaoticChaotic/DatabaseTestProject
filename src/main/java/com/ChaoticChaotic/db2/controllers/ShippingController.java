@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @AllArgsConstructor
@@ -21,28 +20,25 @@ public class ShippingController {
     private ShippingMapper mapper;
 
     @GetMapping("/all")
-    public ResponseEntity<List<ShippingDTO>> getAllShipping(){
-        return ResponseEntity.ok().body(shippingService.showAllShipping()
-                .stream()
-                .map(mapper::returnDTO)
-                .collect(Collectors.toList()));
-    }
-
-    @DeleteMapping("/delete")
-    public ResponseEntity<Object> deleteShipping(@RequestHeader(value = "shippingId") Long id){
-        shippingService.deleteShippingById(id);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<List<ShippingDTO>> getAll(){
+        return ResponseEntity.ok().body(shippingService.showAll());
     }
 
     @PostMapping("/save")
-    public ResponseEntity<ShippingDTO> saveShipping(@RequestBody @Valid ShippingCreationRequest request){
-        return ResponseEntity.status(201).body(shippingService.saveShippingFromRequest(request));
+    public ResponseEntity<ShippingDTO> save(@RequestBody @Valid ShippingCreationRequest request){
+        return ResponseEntity.status(201).body(shippingService.saveFromRequest(request));
     }
 
-    @PatchMapping("/edit")
-    public ResponseEntity<ShippingDTO> editShipping(@RequestHeader(value = "shippingId") Long id,
-                                                    @RequestBody @Valid ShippingCreationRequest request)  {
-        return ResponseEntity.ok().body(shippingService.editShippingById(id, request));
+    @DeleteMapping("/delete/{shippingId}")
+    public ResponseEntity<Object> delete(@PathVariable(value = "shippingId") Long id){
+        shippingService.deleteById(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/edit/{shippingId}")
+    public ResponseEntity<ShippingDTO> edit(@PathVariable(value = "shippingId") Long id,
+                                            @RequestBody @Valid ShippingCreationRequest request)  {
+        return ResponseEntity.ok().body(shippingService.editById(id, request));
     }
 
 }

@@ -8,22 +8,22 @@ server:
 
 spring:
   liquibase:
-    enabled: false
+    enabled: true
   application:
     name: db2
   datasource:
     username: user
-    password:
-    url: jdbc:postgresql://localhost:5433/user
+    password: password
+    url: jdbc:postgresql://postgres:5432/shipping
   jpa:
     open-in-view: false
     hibernate:
-      ddl-auto: create
+      ddl-auto: validate
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQL9Dialect
         format_sql: true
-    show-sql: true
+        show-sql: true
   output:
     ansi:
       enabled: always
